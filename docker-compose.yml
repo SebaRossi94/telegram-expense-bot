@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: bot-service-database
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bot-service:
+    container_name: bot-service
+    build: ./bot-service
+    env_file: .env
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./bot-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # connector-service:
+  #   build: ./connector-service
+  #   environment:
+  #     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+  #     BOT_SERVICE_URL: http://bot-service:8000
+  #     WEBHOOK_URL: ${WEBHOOK_URL}
+  #     PORT: 3000
+  #     NODE_ENV: production
+  #     LOG_LEVEL: info
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     bot-service:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
