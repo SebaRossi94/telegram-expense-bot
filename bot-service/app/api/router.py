@@ -1,8 +1,11 @@
 from fastapi.routing import APIRouter
 from app.settings import settings
 from app.db import check_db_health
+from .v1 import router as v1_router
+
 
 router = APIRouter()
+router.include_router(v1_router)
 
 @router.get("/health")
 async def health_check():

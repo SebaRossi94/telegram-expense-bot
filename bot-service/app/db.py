@@ -35,14 +35,15 @@ def updated_at(mapper, connection, target):
 
 
 def get_session() -> Generator[Session, None, None]:
-    with Session(engine, autoflush=True) as session:
-        with session.begin():
-            yield session
+    session = Session(engine, autoflush=True)
+    yield session
+    session.close()
 
 
 def get_session_no_transaction() -> Generator[Session, None, None]:
-    with Session(engine) as session:
-        yield session
+    session = Session(engine)
+    yield session
+    session.close()
 
 def check_db_health() -> bool:
     """Check database health."""
