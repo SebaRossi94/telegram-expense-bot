@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create migration",
+      "type": "shell",
+      "command": "docker compose exec bot-service alembic revision --autogenerate -m '${input:migration}'"
+    },
+    {
+      "label": "Run migration",
+      "type": "shell",
+      "command": "docker compose exec bot-service alembic upgrade head"
+    },
+  ],
+  "inputs": [
+    {
+      "id": "migration",
+      "type": "promptString",
+      "description": "name your migration"
+    }
+  ]
+}
