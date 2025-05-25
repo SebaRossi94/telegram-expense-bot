@@ -107,18 +107,17 @@ class ExpenseAnalyzer:
                 HumanMessage(content=message.strip())
             ]
 
+            response = await self.llm.ainvoke(messages)
+            logger.info(response)
             if self.dev:
-                response = await self.llm.ainvoke(messages)
-                logger.info(response)
                 result = self._parse_llm_response(response.content) # type: ignore
                 logger.info(result)
             else:
-                response = await self.llm.ainvoke(messages)
                 result = self._parse_llm_response(response.text())
             
             if result and result.get("is_expense"):
                 # Validate and clean the result
-                return self._validate_expense_data(result, message)
+                return self._validate_expense_data(result)
             
             return None
             
@@ -174,7 +173,7 @@ class ExpenseAnalyzer:
             logger.error(f"Error parsing LLM response: {e}")
             return None
     
-    def _validate_expense_data(self, data: Dict[str, Any], original_message: str) -> Optional[Dict[str, Any]]:
+    def _validate_expense_data(self, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Validate and clean expense data from LLM."""
         try:
             # Check required fields
@@ -208,13 +207,8 @@ class ExpenseAnalyzer:
                 "description": description,
                 "amount": amount,
                 "category": category,
-                "original_message": original_message
             }
             
         except Exception as e:
             logger.error(f"Error validating expense data: {e}")
             return None
-
-
-# Global analyzer instance
-expense_analyzer = ExpenseAnalyzer()

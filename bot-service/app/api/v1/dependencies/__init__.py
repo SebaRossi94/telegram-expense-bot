@@ -1,12 +1,13 @@
 from typing import Annotated
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from sqlmodel import select, Session
+from app.expense_analyzer import ExpenseAnalyzer
 
 from app.db import get_session
 from app.models.users import Users
 
 
-async def validate_telegram_id(telegram_id: str, session: Annotated[Session, Depends(get_session)]):
+async def validate_telegram_id(telegram_id: str, session: Annotated[Session, Depends(get_session)]) -> Users:
     """
     Validate Telegram ID.
     """
@@ -16,4 +17,7 @@ async def validate_telegram_id(telegram_id: str, session: Annotated[Session, Dep
             status_code=404,
             detail="User not found"
         )
-    return user.telegram_id
+    return user
+
+def get_analyzer(request: Request) -> ExpenseAnalyzer:
+    return request.app.state.expense_analyzer
