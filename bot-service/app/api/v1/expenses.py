@@ -1,8 +1,8 @@
 import logging
-from typing import Annotated
+from typing import Annotated, Sequence
 from fastapi import Depends, HTTPException
 from fastapi.routing import APIRouter
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from app.db import get_session
 from app.models.messages import MessageRequest
@@ -45,3 +45,17 @@ async def add_expense_to_user(
         session.commit()
         session.refresh(new_expense)
         return new_expense
+
+
+@router.get("/{telegram_id}")
+async def get_user_expenses(
+    user: Annotated[Users, Depends(validate_telegram_id)],
+    session: Annotated[Session, Depends(get_session)],
+    ) -> Sequence[Expenses]:
+    """
+    Get user expenses.
+    """
+    expenses = session.exec(
+        select(Expenses).where(Expenses.user_id == user.id)
+    ).all()
+    return expenses
