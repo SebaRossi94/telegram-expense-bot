@@ -16,5 +16,6 @@ async def health_check():
         "status": "healthy" if db_healthy else "unhealthy",
         "service": settings.app_name,
         "version": settings.version,
-        "database": "connected" if db_healthy else "disconnected"
+        "database": "connected" if db_healthy else "disconnected",
+        "expense_categories": settings.expense_categories,
     }
