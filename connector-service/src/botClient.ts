@@ -2,14 +2,6 @@ import axios, { type InternalAxiosRequestConfig, type AxiosInstance, type AxiosR
 import config from './config.js';
 import logger from './middlewares/logging';
 
-interface ProcessBotMessageResponse {
-  success: boolean;
-  error?: string;
-  message?: string;
-  data?: Record<string, any>;
-  [key: string]: any;
-}
-
 export interface Expense {
     created_at: Date;
     updated_at: Date;
@@ -18,6 +10,14 @@ export interface Expense {
     description: string;
     amount: number;
     category: string;
+}
+
+interface ProcessBotMessageResponse {
+  success: boolean;
+  error?: string;
+  message?: string;
+  data?: Record<string, any> | Expense;
+  [key: string]: any;
 }
 
 interface WhitelistResponse {
@@ -124,6 +124,7 @@ export class BotServiceClient {
 
   async getUserExpenses(telegramId: string): Promise<Expense[]> {
     try {
+      logger.info('Getting user expenses:', telegramId)
       const response = await this.client.get(`/v1/expenses/${telegramId}`);
       return response.data || [];
     } catch (error) {

@@ -1,15 +1,12 @@
-import TelegramBot from 'node-telegram-bot-api';
 import express from 'express';
-import config from './config';
 import router from './routes/index';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import './telegramBot'
 
-const telegramBot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 const app = express();
-
 // Security middleware
 app.use(helmet());
 app.use(cors());
@@ -29,16 +26,7 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-//  Listen for any kind of message. There are different kinds of
-//  messages.
- telegramBot.on('message', (msg) => {
-   const chatId = msg.chat.id;
-
-// send a message to the chat acknowledging receipt of their message
-   console.log(msg);
-   telegramBot.sendMessage(chatId, 'Hello there');
- });
-
+// routes
 app.use(router)
 
 export default app;
