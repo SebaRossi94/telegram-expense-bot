@@ -39,7 +39,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
    telegramBot.sendMessage(chatId, 'Hello there');
  });
 
-app.get('/health', (_, res) => {res.json({status: 'ok'})})
 app.use(router)
 
 export default app;
