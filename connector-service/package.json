@@ -11,8 +11,11 @@
         "lint": "eslint 'src/**/*.ts'"
     },
     "devDependencies": {
+        "@types/compression": "^1.8.0",
+        "@types/cors": "^2.8.18",
         "@types/express": "^5.0.2",
         "@types/node": "^22.15.21",
+        "@types/node-telegram-bot-api": "^0.64.8",
         "dotenv": "^16.5.0",
         "eslint": "^9.27.0",
         "express": "^5.1.0",
@@ -28,6 +31,10 @@
     },
     "dependencies": {
         "axios": "^1.9.0",
+        "compression": "^1.8.0",
+        "cors": "^2.8.5",
+        "express-rate-limit": "^7.5.0",
+        "helmet": "^8.1.0",
         "node-telegram-bot-api": "^0.66.0",
         "telegraf": "^4.16.3"
     }
