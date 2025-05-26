@@ -53,6 +53,15 @@ cp connector-service/.env.example connector-service/.env
 docker-compose up -d
 ```
 
+4. Run migrations
+```
+CMD + Shift + P -> Tasks: Run Task -> Run Migration
+
+or
+
+docker compose exec bot-service alembic upgrade head
+```
+
 See individual service READMEs for detailed setup instructions:
 - [Bot Service Setup](./bot-service/README.md)
 - [Connector Service Setup](./connector-service/README.md)
