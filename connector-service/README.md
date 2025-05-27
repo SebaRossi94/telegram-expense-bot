@@ -21,17 +21,20 @@ The Connector Service acts as the interface between the Telegram API and the Bot
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Set up environment variables:
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 3. Start the service:
+
 ```bash
 npm start
 ```

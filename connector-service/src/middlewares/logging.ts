@@ -9,7 +9,7 @@ import config from '../config';
 const logFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.errors({ stack: true }),
-  winston.format.json()
+  winston.format.json(),
 );
 
 // Create logger instance
@@ -22,22 +22,26 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
-      )
-    })
-  ]
+        winston.format.simple(),
+      ),
+    }),
+  ],
 });
 
 // Add file transport in production
 if (config.NODE_ENV === 'production') {
-  logger.add(new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error'
-  }));
-  
-  logger.add(new winston.transports.File({
-    filename: 'logs/combined.log'
-  }));
+  logger.add(
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+  );
+
+  logger.add(
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+    }),
+  );
 }
 
 export default logger;

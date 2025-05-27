@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
-import './telegramBot'
+import './telegramBot';
 
 const app = express();
 // Security middleware
@@ -27,6 +27,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // routes
-app.use(router)
+app.use(router);
 
 export default app;

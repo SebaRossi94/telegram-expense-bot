@@ -3,6 +3,6 @@ import healtRouter from './health';
 
 const router = express.Router({ mergeParams: true });
 
-router.use('', healtRouter)
+router.use('', healtRouter);
 
 export default router;

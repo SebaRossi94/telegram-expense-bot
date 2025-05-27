@@ -1,6 +1,6 @@
 {
   "*.{ts,tsx}": [
-    "eslint --fix",
+    "npx eslint --fix",
     "npx prettier --write"
   ]
 }

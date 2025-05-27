@@ -1,23 +1,27 @@
-import axios, { type InternalAxiosRequestConfig, type AxiosInstance, type AxiosResponse } from 'axios';
+import axios, {
+  type InternalAxiosRequestConfig,
+  type AxiosInstance,
+  type AxiosResponse,
+} from 'axios';
 import config from './config.js';
 import logger from './middlewares/logging';
 
 export interface Expense {
-    created_at: Date;
-    updated_at: Date;
-    id: number;
-    user_id: number;
-    description: string;
-    amount: number;
-    category: string;
+  created_at: Date;
+  updated_at: Date;
+  id: number;
+  user_id: number;
+  description: string;
+  amount: number;
+  category: string;
 }
 
 interface ProcessBotMessageResponse {
   success: boolean;
   error?: string;
   message?: string;
-  data?: Record<string, any> | Expense;
-  [key: string]: any;
+  data?: Record<string, unknown> | Expense;
+  [key: string]: unknown;
 }
 
 interface WhitelistResponse {
@@ -53,7 +57,7 @@ export class BotServiceClient {
       (error) => {
         logger.error('Bot Service Request Error:', error);
         return Promise.reject(error);
-      }
+      },
     );
 
     this.client.interceptors.response.use(
@@ -71,19 +75,24 @@ export class BotServiceClient {
           message: error.message,
         });
         return Promise.reject(error);
-      }
+      },
     );
   }
 
-  async processBotMessage(telegramId: string, message: string): Promise<ProcessBotMessageResponse> {
+  async processBotMessage(
+    telegramId: string,
+    message: string,
+  ): Promise<ProcessBotMessageResponse> {
     try {
-      const response = await this.client.post(`/v1/expenses/${telegramId}`, { message });
+      const response = await this.client.post(`/v1/expenses/${telegramId}`, {
+        message,
+      });
       if (response?.status === 200) {
         return {
           success: true,
           data: response.data,
         };
-      } 
+      }
       return {
         success: false,
         data: response.data,
@@ -93,7 +102,8 @@ export class BotServiceClient {
       return {
         success: false,
         error: 'Service unavailable',
-        message: 'Bot service is currently unavailable. Please try again later.',
+        message:
+          'Bot service is currently unavailable. Please try again later.',
       };
     }
   }
@@ -112,19 +122,19 @@ export class BotServiceClient {
       return {
         success: false,
         telegram_id: telegramId,
-      }
+      };
     } catch (error) {
       logger.error('Failed to add user to whitelist:', error);
       return {
         success: false,
         telegram_id: telegramId,
-      }
+      };
     }
   }
 
   async getUserExpenses(telegramId: string): Promise<Expense[]> {
     try {
-      logger.info('Getting user expenses:', telegramId)
+      logger.info('Getting user expenses:', telegramId);
       const response = await this.client.get(`/v1/expenses/${telegramId}`);
       return response.data || [];
     } catch (error) {
