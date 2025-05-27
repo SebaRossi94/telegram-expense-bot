@@ -1,10 +1,10 @@
 import logging
 from datetime import datetime, timezone
 from typing import Generator
-from sqlmodel import SQLModel, Session
-from sqlalchemy import QueuePool, create_engine, text
-from sqlmodel import Field
-from sqlalchemy import event
+
+from sqlalchemy import QueuePool, create_engine, event, text
+from sqlmodel import Field, Session, SQLModel
+
 from app.settings import settings
 
 # Configure logging
@@ -18,11 +18,13 @@ engine = create_engine(
     max_overflow=30,
     pool_pre_ping=True,
     pool_recycle=3600,
-    echo=settings.log_level == "DEBUG"
+    echo=settings.log_level == "DEBUG",
 )
+
 
 class SQLBaseModel(SQLModel):
     pass
+
 
 class SQLBaseModelAudit(SQLBaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -44,6 +46,7 @@ def get_session_no_transaction() -> Generator[Session, None, None]:
     session = Session(engine)
     yield session
     session.close()
+
 
 def check_db_health() -> bool:
     """Check database health."""

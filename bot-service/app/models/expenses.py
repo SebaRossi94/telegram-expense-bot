@@ -1,5 +1,7 @@
 from sqlmodel import Field
+
 from app.db import SQLBaseModelAudit
+
 
 class Expenses(SQLBaseModelAudit, table=True):
     id: int = Field(primary_key=True)

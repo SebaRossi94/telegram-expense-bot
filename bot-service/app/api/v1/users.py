@@ -1,7 +1,9 @@
 from typing import Sequence
+
 from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlmodel import Session, select
+
 from app.db import get_session
 from app.models.users import UserCreate, UserResponse, Users
 
@@ -16,8 +18,11 @@ async def get_all_users(session: Session = Depends(get_session)) -> Sequence[Use
     users = session.exec(select(Users)).all()
     return users
 
+
 @router.post("/", response_model=UserResponse)
-async def create_user(user: UserCreate, session: Session = Depends(get_session)) -> Users:
+async def create_user(
+    user: UserCreate, session: Session = Depends(get_session)
+) -> Users:
     """
     Create a new user.
     """
