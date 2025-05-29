@@ -6,7 +6,7 @@
   "author": "Sebastian Rossi Grad",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/server.ts",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'npx tsx' src/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
