@@ -7,6 +7,8 @@ from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, Optional
 
 from langchain.schema import HumanMessage, SystemMessage
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_openai import ChatOpenAI
 
 from app.settings import settings
 
@@ -21,7 +23,6 @@ class ExpenseAnalyzer:
         self.dev = dev
         """Initialize the expense analyzer."""
         if self.dev:
-            from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 
             llm = HuggingFaceEndpoint(
                 model=settings.huggingfacehub_model,
@@ -34,7 +35,6 @@ class ExpenseAnalyzer:
             )
             self.llm = ChatHuggingFace(llm=llm)
         else:
-            from langchain_openai import ChatOpenAI
 
             self.llm = ChatOpenAI(
                 model=settings.llm_model,
