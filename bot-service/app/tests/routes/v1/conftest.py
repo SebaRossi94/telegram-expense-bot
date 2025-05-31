@@ -1,5 +1,9 @@
+from unittest.mock import AsyncMock
+
 import pytest
 
+from app.expense_analyzer import ExpenseAnalyzer
+from app.models.expenses import Expenses
 from app.models.users import Users
 
 
@@ -22,3 +26,32 @@ def sample_user_create(session):
     session.add(user)
     session.commit()
     return user
+
+
+@pytest.fixture
+def mock_analyzer(mocker):
+    """Mock expense analyzer"""
+    mock = AsyncMock(spec=ExpenseAnalyzer)
+    return mock
+
+
+@pytest.fixture
+def client_with_analyzer(client, mock_analyzer):
+    """Client fixture with expense analyzer in app state"""
+    client.app.state.expense_analyzer = mock_analyzer
+    return client
+
+
+@pytest.fixture
+def sample_expense(session, sample_users):
+    """Sample expense data for testing"""
+    expense = Expenses(
+        id=1,
+        user_id=sample_users[0].id,
+        amount=100.0,
+        category="Food",
+        description="Lunch",
+    )
+    session.add(expense)
+    session.commit()
+    return expense
