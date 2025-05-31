@@ -21,18 +21,17 @@ services:
     env_file: ./bot-service/.env
     ports:
       - "8000:8000"
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - ./bot-service:/app
     depends_on:
       postgres:
         condition: service_healthy
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://bot-service:8000/health"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    # restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
   connector-service:
     build: ./connector-service
@@ -43,9 +42,9 @@ services:
       - ./connector-service:/app
       - /app/node_modules
     command: npm run dev
-    # depends_on:
-    #   bot-service:
-    #     condition: service_healthy
+    depends_on:
+      bot-service:
+        condition: service_healthy
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
     #   interval: 30s
