@@ -14,6 +14,8 @@ interface Config {
   PORT: number;
   NODE_ENV: string;
   LOG_LEVEL: string;
+  BOT_SERVICE_API_KEY_SECRET: string;
+  BOT_SERVICE_API_KEY_HEADER: string;
 }
 
 const config: Config = {
@@ -31,6 +33,10 @@ const config: Config = {
 
   // Logging Configuration
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
+
+  // Bot Service API Key Configuration
+  BOT_SERVICE_API_KEY_SECRET: process.env.BOT_SERVICE_API_KEY_SECRET!,
+  BOT_SERVICE_API_KEY_HEADER: process.env.BOT_SERVICE_API_KEY_HEADER!,
 };
 
 export default config;

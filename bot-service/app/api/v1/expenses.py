@@ -6,6 +6,7 @@ from fastapi.routing import APIRouter
 from sqlmodel import Session, select
 
 from app.api.v1.dependencies import get_analyzer, validate_telegram_id
+from app.auth import get_api_key
 from app.db import get_session
 from app.expense_analyzer import ExpenseAnalyzer
 from app.models.expenses import Expenses
@@ -23,6 +24,7 @@ async def add_expense_to_user(
     payload: MessageRequest,
     analyzer: Annotated[ExpenseAnalyzer, Depends(get_analyzer)],
     session: Annotated[Session, Depends(get_session)],
+    api_key: str = Depends(get_api_key),
 ) -> Expenses:
     """
     Add expense to user.
@@ -47,6 +49,7 @@ async def add_expense_to_user(
 async def get_user_expenses(
     user: Annotated[Users, Depends(validate_telegram_id)],
     session: Annotated[Session, Depends(get_session)],
+    api_key: str = Depends(get_api_key),
 ) -> Sequence[Expenses]:
     """
     Get user expenses.
