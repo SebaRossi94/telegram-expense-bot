@@ -30,6 +30,7 @@ os.environ.update(
     }
 )
 
+from app.auth import get_api_key  # noqa: E402
 from app.db import get_session  # noqa: E402
 from app.main import app  # noqa: E402
 
@@ -59,6 +60,24 @@ def session_no_transaction_fixture():
 
 
 @pytest.fixture(name="client")
+def auth_client_fixture(session: Session):
+    """Client fixture for requests without authorized user"""
+
+    def get_session_override():
+        return session
+
+    def get_api_key_override():
+        return None
+
+    app.dependency_overrides[get_session] = get_session_override
+    app.dependency_overrides[get_api_key] = get_api_key_override
+
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture(name="unauthorized_client")
 def client_fixture(session: Session):
     """Client fixture for requests without authorized user"""
 

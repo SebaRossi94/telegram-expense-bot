@@ -4,6 +4,7 @@ from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlmodel import Session, select
 
+from app.auth import get_api_key
 from app.db import get_session
 from app.models.users import UserCreate, UserResponse, Users
 
@@ -11,7 +12,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/", response_model=list[UserResponse])
-async def get_all_users(session: Session = Depends(get_session)) -> Sequence[Users]:
+async def get_all_users(
+    session: Session = Depends(get_session), api_key: str = Depends(get_api_key)
+) -> Sequence[Users]:
     """
     Get all users.
     """
@@ -21,7 +24,9 @@ async def get_all_users(session: Session = Depends(get_session)) -> Sequence[Use
 
 @router.post("/", response_model=UserResponse)
 async def create_user(
-    user: UserCreate, session: Session = Depends(get_session)
+    user: UserCreate,
+    session: Session = Depends(get_session),
+    api_key: str = Depends(get_api_key),
 ) -> Users:
     """
     Create a new user.

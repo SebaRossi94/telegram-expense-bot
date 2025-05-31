@@ -38,6 +38,7 @@ export class BotServiceClient {
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
+        [config.BOT_SERVICE_API_KEY_HEADER]: config.BOT_SERVICE_API_KEY_SECRET,
       },
     });
 
