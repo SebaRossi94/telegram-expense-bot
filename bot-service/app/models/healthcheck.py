@@ -1,8 +1,15 @@
+from enum import Enum
+
 from app.db import SQLBaseModel
 
 
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
 class HealthcheckResponse(SQLBaseModel):
-    status: str
+    status: HealthStatus
     service: str
     version: str
     database: str
