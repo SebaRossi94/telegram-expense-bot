@@ -344,12 +344,52 @@ class TestExpenseAnalyzer:
         input_data = {
             "description": "Test expense",
             "amount": 25.50,
-            "category": "food",  # lowercase instead of "Food"
+            "category": "food",  # lowercase, should be "Food"
         }
 
         result = expense_analyzer_dev._validate_expense_data(input_data)
 
         assert result is not None
-        assert (
-            result["category"] == "Other"
-        )  # Should default to "Other" for invalid category
+        assert result["category"] == "Other"  # Should default to Other
+
+    def test_parse_llm_response_general_exception(self, expense_analyzer_dev):
+        """Test handling of general exceptions in _parse_llm_response."""
+        with patch("json.loads") as mock_loads:
+            mock_loads.side_effect = Exception("Unexpected error")
+            result = expense_analyzer_dev._parse_llm_response('{"not": "valid"}')
+            assert result is None
+
+    def test_validate_expense_data_general_exception(self, expense_analyzer_dev):
+        """Test handling of general exceptions in _validate_expense_data."""
+        # Create a real data dictionary that will cause an exception
+        input_data = {
+            "description": "Test",
+            "amount": complex(
+                1, 2
+            ),  # Using complex number will cause an exception in Decimal conversion
+            "category": "Food",
+        }
+        result = expense_analyzer_dev._validate_expense_data(input_data)
+        assert result is None
+
+    def test_validate_expense_data_type_error(self, expense_analyzer_dev):
+        """Test handling of TypeError in _validate_expense_data."""
+        input_data = {
+            "description": None,  # This will cause a TypeError when calling strip()
+            "amount": 25.50,
+            "category": "Food",
+        }
+        result = expense_analyzer_dev._validate_expense_data(input_data)
+        assert result is None
+
+    def test_validate_expense_data_invalid_decimal_conversion(
+        self, expense_analyzer_dev
+    ):
+        """Test handling of invalid decimal conversion."""
+        input_data = {
+            "description": "Test expense",
+            "amount": "not.a.number",
+            "category": "Food",
+        }
+        result = expense_analyzer_dev._validate_expense_data(input_data)
+        assert result is None
