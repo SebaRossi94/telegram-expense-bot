@@ -3,7 +3,7 @@ import axios, {
   type AxiosInstance,
   type AxiosResponse,
 } from 'axios';
-import config from './config.js';
+import config from './config';
 import logger from './middlewares/logging';
 
 export interface Expense {

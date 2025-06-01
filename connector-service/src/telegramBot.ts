@@ -13,7 +13,7 @@ telegramBot.onText(/\/list/, async (msg) => {
   const telegramId = msg.from?.username;
   try {
     const botServiceClient = new BotServiceClient();
-    const expenses = await botServiceClient.getUserExpenses(telegramId);
+    const expenses = await botServiceClient.getUserExpenses(telegramId!);
     const parsedExpenses = expenses.map(
       (expense: Expense) =>
         `${expense.category} - ${expense.description} - ${expense.amount}`,
@@ -35,14 +35,15 @@ telegramBot.onText(/\/list/, async (msg) => {
 telegramBot.onText(/\/add (.*)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const telegramId = msg.chat.username;
-  if (match[1] === null) {
+  if (!match?.[1]) {
     telegramBot.sendMessage(chatId, 'Please write your expense');
+    return;
   }
-  logger.info(`${telegramId} is trying to add expense with text ${match[1]}`);
+  logger.info(`${telegramId} is trying to add expense with text ${match?.[1]}`);
   const botServiceClient = new BotServiceClient();
   telegramBot.sendMessage(chatId, 'Processing your expense...');
   const response = await botServiceClient.processBotMessage(
-    telegramId,
+    telegramId ?? '',
     match[1],
   );
   if (response.success) {
