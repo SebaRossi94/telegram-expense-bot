@@ -12,6 +12,14 @@ const config: Config.InitialOptions = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      statements: 75,
+      branches: 75,
+      functions: 90,
+      lines: 75,
+    },
+  },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
